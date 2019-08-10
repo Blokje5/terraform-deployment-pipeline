@@ -9,3 +9,9 @@ This repository contains rego policies for use with [the Open Policy Agent](http
 3. Create a set of REGO policies for AWS resources and Kubernetes resources
 4. Build a CI/CD pipeline for terraform and kubernetes deployments, validating them with OPA
 
+## Using the makefile to setup a cluster
+
+```bash
+make create-<name of cluster>
+export KUBECONFIG=$(make env-<name of cluster>)
+```
