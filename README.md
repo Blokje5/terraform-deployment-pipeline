@@ -12,6 +12,6 @@ This repository contains rego policies for use with [the Open Policy Agent](http
 ## Using the makefile to setup a cluster
 
 ```bash
-make create-<name of cluster>
-export KUBECONFIG=$(make env-<name of cluster>)
+make create
+export KUBECONFIG=$(make env)
 ```
