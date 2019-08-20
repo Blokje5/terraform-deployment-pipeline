@@ -9,7 +9,8 @@ iam_resources = [
 ]
 
 is_iam_resource(resource) {
-    common.is_resource_of_type(resource, iam_resources[_])
+    iam := iam_resources[_]
+    common.is_resource_of_type(resource, iam)
 }
 
 has_permission_boundary(resource, permission_boundary_arn) {
