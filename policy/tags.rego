@@ -2,13 +2,22 @@ package aws.tags_validation
 
 minimum_tags = {"ApplicationRole", "Owner", "Project"}
 
-key_val_valid_pascal_case(key, val) {
-    is_pascal_case(key)
-    is_pascal_case(val)
+# checks if all tags are camel case
+tags_camel_case(tags) {
+  not any_tags_not_camel_case(tags)
 }
 
-is_pascal_case(string) {
-    re_match(`^([A-Z][a-z0-9]+)+`, string)
+# checks if any tags are NOT camel case
+any_tags_not_camel_case(tags) {
+    some key
+    val := tags[key]
+    not is_camel_case(key, val)
+}
+
+# checks if a and b are both camel case
+is_camel_case(a, b) {
+  re_match(`^([A-Z][a-z0-9]+)+`, a)
+  re_match(`^([A-Z][a-z0-9]+)+`, b)
 }
 
 tags_contain_proper_keys(tags) {

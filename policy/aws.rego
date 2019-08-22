@@ -9,10 +9,10 @@ module_address[i] = address {
 }
 
 # validating existince of tags
-tags_pascal_case[i] = resources {
+tags_camel_case[i] = resources {
     changeset := input.resource_changes[i]
     tags  := changeset.change.after.tags
-    resources := [resource | resource := module_address[i]; val := tags[key]; not tags_validation.key_val_valid_pascal_case(key, val)]
+    resources := [resource | resource := module_address[i]; tags_validation.tags_camel_case(tags)]
 }
 
 tags_contain_minimum_set[i] = resources {

@@ -9,7 +9,7 @@ deny[msg] {
 }
 
 deny[msg] {
-    resources := aws.tags_pascal_case[_]
+    resources := aws.tags_camel_case[_]
     resources != []
     msg := sprintf("Invalid tags (not pascal case) for the following resources: %v", [resources])
 }
