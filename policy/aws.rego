@@ -22,13 +22,19 @@ tags_contain_minimum_set[i] = resources {
 }
 
 # Checking for S3 buckets
-s3_buckets[i] = resource {
-    resource := input.resource_changes[i]
-    s3.is_s3_bucket(resource)
+s3_buckets[bucket] {
+    bucket := input.resource_changes[i]
+    s3.is_s3_bucket(bucket)
 }
 
-access_blocks[i] = resource {
+buckets_with_access_blocks[bucket] {
     resource := input.resource_changes[i]
-    bucket := s3_buckets[_].name
-    s3.accesss_block_of_bucket(resource, bucket)
+    s3.is_access_block(resource)
+    bucket := s3_buckets[j]
+    not s3.access_block_of_bucket(resource, bucket)
+}
+
+buckets_without_access_blocks[bucket] {
+    buckets_without_access_blocks := s3_buckets - buckets_with_access_blocks
+    bucket := buckets_without_access_blocks[_].address
 }

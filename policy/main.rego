@@ -15,7 +15,7 @@ deny[msg] {
 }
 
 deny[msg] {
-    true
-    resources := aws.access_blocks[_]
-    msg := sprintf("Invalid tags (not pascal case) for the following resources: %v", [resources])
+    resources := aws.buckets_without_access_blocks[_]
+    resources != []
+    msg := sprintf("S3 bucket has no access blocks: %v", [resources])
 }
