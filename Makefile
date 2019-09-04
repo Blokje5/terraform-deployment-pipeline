@@ -1,5 +1,10 @@
 WAIT := 200s
 APPLY = kubectl apply -f --kubeconfig=$$(kind get kubeconfig-path --name test) --filename
+OPA = opa
+
+unit-test:
+	@$(OPA) test -v policy
+
 create:
 	-@kind create cluster --name test --wait $(WAIT)
 
@@ -18,4 +23,4 @@ list:
 registry:
 	@$(APPLY) deployments/registry/registry.yml
 
-.PHONY: create delete env clean list registry
+.PHONY: create delete env clean list registry unit-test

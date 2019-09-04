@@ -1,28 +1,24 @@
 package aws.tags_validation
 
-test_tags_valid_pascal_case {
+test_tags_valid_camel_case {
     tags := { "ApplicationRole": "ArtifactRepository" }
-    val := tags[key]
-    key_val_valid_pascal_case(key, val)
+    tags_camel_case(tags)
 }
 
-test_tags_valid_pascal_case_lower_case_key {
+test_tags_valid_camel_case_lower_case_key {
     tags := { "applicationRole": "ArtifactRepository" }
-    val := tags[key]
-    not key_val_valid_pascal_case(key, val)
+    not tags_camel_case(tags)
 }
 
-test_tags_valid_pascal_case_lower_case_value {
+test_tags_valid_camel_case_lower_case_value {
     tags := { "ApplicationRole": "artifactRepository" }
-    val := tags[key]
-    not key_val_valid_pascal_case(key, val)
+    not tags_camel_case(tags)
 }
 
 
-test_tags_valid_pascal_case_lower_case_value_multiple_tags {
+test_tags_valid_camel_case_lower_case_value_multiple_tags {
     tags := { "ApplicationRole": "artifactRepository", "Project": "Artifacts" }
-    val := tags[key]
-    not key_val_valid_pascal_case(key, val)
+    not tags_camel_case(tags)
 }
 
 test_tags_contain_proper_keys {
