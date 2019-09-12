@@ -26,4 +26,4 @@ registry:
 tekton:
 	@$(APPLY) https://storage.googleapis.com/tekton-releases/latest/release.yaml
 
-.PHONY: create delete env clean list registry unit-test
+.PHONY: create delete env clean list registry unit-test tekton

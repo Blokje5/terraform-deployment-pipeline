@@ -4,11 +4,11 @@ metadata:
   name: terraform-plan
 spec:
   params:
-        # These may be overridden, but provide sensible defaults.
-        - name: directory
-          type: string
-          description: The directory containing the build context.
-          default: /workspace
+    # These may be overridden, but provide sensible defaults.
+    - name: directory
+      type: string
+      description: The directory containing the build context.
+      default: /workspace
   outputs:
   steps:
     - name: terraform init
@@ -34,3 +34,14 @@ spec:
         ">", 
         "tfplan.json"
       ]
+      env:
+      - name: AWS_ACCESS_KEY_ID
+        valueFrom:
+          secretKeyRef:
+            name: aws-secret
+            key: key
+      - name: AWS_SECRET_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: aws-secret
+            key: secret
