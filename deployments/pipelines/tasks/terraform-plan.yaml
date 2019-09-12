@@ -1,0 +1,36 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: terraform-plan
+spec:
+  params:
+        # These may be overridden, but provide sensible defaults.
+        - name: directory
+          type: string
+          description: The directory containing the build context.
+          default: /workspace
+  outputs:
+  steps:
+    - name: terraform init
+      image: blokje5/terraform-aws:latest
+      workingDir: "$(inputs.params.directory)"
+      args: [
+        "init"
+      ]
+    - name: terraform plan
+      image: blokje5/terraform-aws:latest
+      workingDir: "$(inputs.params.directory)"
+      args: [
+        "plan",
+        "-out=tfplan"
+      ]
+    - name: terraform plan
+      image: blokje5/terraform-aws:latest
+      workingDir: "$(inputs.params.directory)"
+      args: [
+        "plan",
+        "-json",
+        ""./tfplan", 
+        ">", 
+        "tfplan.json"
+      ]
