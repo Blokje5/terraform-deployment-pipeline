@@ -9,6 +9,10 @@ spec:
         type: string
         description: The directory containing the build context.
         default: /workspace
+  volumes:
+    - name: terraform-volume
+      configMap:
+        name: terraform
   steps:
     - name: terraform-init
       image: blokje5/terraform-aws:latest
@@ -16,6 +20,9 @@ spec:
       args: [
         "init"
       ]
+      volumeMounts:
+        - name: terraform-volume
+          mountPath: "$(inputs.params.directory)"
     - name: terraform-plan
       image: blokje5/terraform-aws:latest
       workingDir: "$(inputs.params.directory)"
@@ -23,6 +30,9 @@ spec:
         "plan",
         "-out=tfplan"
       ]
+      volumeMounts:
+        - name: terraform-volume
+          mountPath: "$(inputs.params.directory)"
       env:
       - name: AWS_ACCESS_KEY_ID
         valueFrom:
@@ -44,3 +54,6 @@ spec:
         ">", 
         "tfplan.json"
       ]
+      volumeMounts:
+        - name: terraform-volume
+          mountPath: "$(inputs.params.directory)"
