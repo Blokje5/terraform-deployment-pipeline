@@ -3,36 +3,25 @@ kind: Task
 metadata:
   name: terraform-plan
 spec:
-  params:
-    # These may be overridden, but provide sensible defaults.
-    - name: directory
-      type: string
-      description: The directory containing the build context.
-      default: /workspace
-  outputs:
+  inputs:
+    params:
+      - name: directory
+        type: string
+        description: The directory containing the build context.
+        default: /workspace
   steps:
-    - name: terraform init
+    - name: terraform-init
       image: blokje5/terraform-aws:latest
       workingDir: "$(inputs.params.directory)"
       args: [
         "init"
       ]
-    - name: terraform plan
+    - name: terraform-plan
       image: blokje5/terraform-aws:latest
       workingDir: "$(inputs.params.directory)"
       args: [
         "plan",
         "-out=tfplan"
-      ]
-    - name: terraform plan
-      image: blokje5/terraform-aws:latest
-      workingDir: "$(inputs.params.directory)"
-      args: [
-        "plan",
-        "-json",
-        ""./tfplan", 
-        ">", 
-        "tfplan.json"
       ]
       env:
       - name: AWS_ACCESS_KEY_ID
@@ -45,3 +34,13 @@ spec:
           secretKeyRef:
             name: aws-secret
             key: secret
+    - name: terraform-show
+      image: blokje5/terraform-aws:latest
+      workingDir: "$(inputs.params.directory)"
+      args: [
+        "show",
+        "-json",
+        "./tfplan", 
+        ">", 
+        "tfplan.json"
+      ]
