@@ -13,25 +13,42 @@ spec:
     - name: terraform-volume
       configMap:
         name: terraform
+    - name: data-storage
+      persistentVolumeClaim:
+        claimName: terraform-volume-claim
   steps:
+    - name: cp
+      image: ubuntu
+      command: 
+        - cp
+      args: [
+        "-r",
+        "/tmp",
+        "$(inputs.params.directory)"
+      ]
+      volumeMounts:
+        - name: data-storage
+          mountPath: "$(inputs.params.directory)"
+        - name: terraform-volume
+          mountPath: "/tmp"
     - name: terraform-init
       image: blokje5/terraform-aws:latest
-      workingDir: "$(inputs.params.directory)"
+      workingDir: "$(inputs.params.directory)/tmp"
       args: [
         "init"
       ]
       volumeMounts:
-        - name: terraform-volume
+        - name: data-storage
           mountPath: "$(inputs.params.directory)"
     - name: terraform-plan
       image: blokje5/terraform-aws:latest
-      workingDir: "$(inputs.params.directory)"
+      workingDir: "$(inputs.params.directory)/tmp"
       args: [
         "plan",
         "-out=tfplan"
       ]
       volumeMounts:
-        - name: terraform-volume
+        - name: data-storage
           mountPath: "$(inputs.params.directory)"
       env:
       - name: AWS_ACCESS_KEY_ID
@@ -44,9 +61,11 @@ spec:
           secretKeyRef:
             name: aws-secret
             key: secret
+      - name: AWS_DEFAULT_REGION
+        value: eu-west-1
     - name: terraform-show
       image: blokje5/terraform-aws:latest
-      workingDir: "$(inputs.params.directory)"
+      workingDir: "$(inputs.params.directory)/tmp"
       args: [
         "show",
         "-json",
@@ -55,5 +74,5 @@ spec:
         "tfplan.json"
       ]
       volumeMounts:
-        - name: terraform-volume
+        - name: data-storage
           mountPath: "$(inputs.params.directory)"

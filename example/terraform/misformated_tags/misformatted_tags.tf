@@ -29,3 +29,8 @@ resource "aws_s3_bucket_public_access_block" "profile_picture_storage_access_rul
   ignore_public_acls      = true
   restrict_public_buckets = true
 }
+
+provider "aws" {
+  version = "~> 2.0"
+  region  = "eu-west-1"
+}
