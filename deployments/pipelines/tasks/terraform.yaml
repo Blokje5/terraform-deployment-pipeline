@@ -13,6 +13,9 @@ spec:
     - name: terraform-volume
       configMap:
         name: terraform
+    - name: policy-volume
+      configMap:
+        name: policy
     - name: data-storage
       persistentVolumeClaim:
         claimName: terraform-volume-claim
@@ -78,3 +81,35 @@ spec:
       volumeMounts:
         - name: data-storage
           mountPath: "$(inputs.params.directory)"
+    # - name: oras-pull
+    #   image: orasbot/oras
+    #   workingDir: "$(inputs.params.directory)/tmp"
+    #   command:
+    #     - oras
+    #     - pull
+    #     - localhost:32001/policies:latest
+    #   volumeMounts:
+    #     - name: data-storage
+    #       mountPath: "$(inputs.params.directory)"
+    # - name: conftest-pull
+    #   image: instrumenta/conftest
+    #   workingDir: "$(inputs.params.directory)/tmp"
+    #   command:
+    #     - conftest
+    #     - pull
+    #     - localhost:32001/policies:latest
+    #   volumeMounts:
+    #     - name: data-storage
+    #       mountPath: "$(inputs.params.directory)"
+    - name: conftest-test
+      image: instrumenta/conftest
+      workingDir: "$(inputs.params.directory)/tmp"
+      command:
+        - conftest
+        - test
+        - tfplan.json
+      volumeMounts:
+        - name: data-storage
+          mountPath: "$(inputs.params.directory)"
+        - name: policy-volume
+          mountPath: "$(inputs.params.directory)/tmp/policy"

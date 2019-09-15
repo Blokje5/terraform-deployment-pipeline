@@ -23,3 +23,17 @@ Verify whether the policies where succesfully uploaded by pulling them
 ```bash
 conftest pull localhost:5000/policies:latest
 ```
+
+# Securing the docker-registry
+See also: https://github.com/kubernetes-sigs/kind/issues/110
+https://github.com/windmilleng/kind-local
+
+Due to the certs not coming from a trusted CA, the kind cluster docker daemon (which uses containerd)
+needs to be edited. 
+
+The following script can be executed after the kind cluster is started to allow for access to an insecure docker-registry 
+from within the kind cluster:
+
+```bash
+./registry.sh
+```
