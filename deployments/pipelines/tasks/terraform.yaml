@@ -61,6 +61,11 @@ spec:
           secretKeyRef:
             name: aws-secret
             key: secret
+      - name: AWS_SESSION_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: aws-secret
+            key: token
       - name: AWS_DEFAULT_REGION
         value: eu-west-1
     - name: terraform-show
