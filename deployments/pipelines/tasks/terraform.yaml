@@ -71,12 +71,9 @@ spec:
     - name: terraform-show
       image: blokje5/terraform-aws:latest
       workingDir: "$(inputs.params.directory)/tmp"
+      command: ["/bin/bash","-c"]
       args: [
-        "show",
-        "-json",
-        "./tfplan", 
-        ">", 
-        "tfplan.json"
+        "terraform show -json ./tfplan > tfplan.json"
       ]
       volumeMounts:
         - name: data-storage
