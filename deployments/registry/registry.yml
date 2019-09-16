@@ -13,30 +13,30 @@ spec:
     volumeMounts:
     - mountPath: /cache
       name: cache-volume
-  - image: nginx
-    name: nginx-proxy
-    ports:
-    - containerPort: 443
-    volumeMounts:
-    - name: secret-volume
-      mountPath: /app/cert
-    - name: config-volume
-      mountPath: /etc/nginx/nginx.conf
-      subPath: nginx.conf
+  # - image: nginx
+  #   name: nginx-proxy
+  #   ports:
+  #   - containerPort: 443
+  #   volumeMounts:
+  #   - name: secret-volume
+  #     mountPath: /app/cert
+  #   - name: config-volume
+  #     mountPath: /etc/nginx/nginx.conf
+  #     subPath: nginx.conf
   volumes:
   - name: cache-volume
     emptyDir: {}
-  - name: secret-volume
-    secret:
-      secretName: nginx-certs
-      items:
-        - key: cert
-          path: docker-registry.pem
-        - key: key
-          path: docker-registry-key.pem
-  - name: config-volume
-    configMap:
-      name: nginx-conf
+  # - name: secret-volume
+  #   secret:
+  #     secretName: nginx-certs
+  #     items:
+  #       - key: cert
+  #         path: docker-registry.pem
+  #       - key: key
+  #         path: docker-registry-key.pem
+  # - name: config-volume
+  #   configMap:
+  #     name: nginx-conf
 ---
 # apiVersion: v1
 # kind: Service
@@ -62,4 +62,4 @@ spec:
   - name: "registry"
     port: 5000
     targetPort: 5000
-    nodePort: 32001
+    # nodePort: 32001
