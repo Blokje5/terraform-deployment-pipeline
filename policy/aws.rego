@@ -12,7 +12,7 @@ module_address[i] = address {
 tags_camel_case[i] = resources {
     changeset := input.resource_changes[i]
     tags  := changeset.change.after.tags
-    resources := [resource | resource := module_address[i]; tags_validation.tags_camel_case(tags)]
+    resources := [resource | resource := module_address[i]; not tags_validation.tags_camel_case(tags)]
 }
 
 tags_contain_minimum_set[i] = resources {

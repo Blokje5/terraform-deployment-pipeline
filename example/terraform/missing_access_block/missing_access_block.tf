@@ -20,3 +20,8 @@ resource "aws_s3_bucket" "profile_picture_storage" {
     ApplicationRole = "FileStorage"
   }
 }
+
+provider "aws" {
+  version = "~> 2.0"
+  region  = "eu-west-1"
+}

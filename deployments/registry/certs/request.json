@@ -1,0 +1,11 @@
+{
+    "CN": "docker-registry",
+    "hosts": [
+      "docker-registry.default.pod.cluster.local",
+      "docker-registry"
+    ],
+    "key": {
+      "algo": "rsa",
+      "size": 2048
+    }
+  }

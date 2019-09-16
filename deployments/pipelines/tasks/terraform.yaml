@@ -1,0 +1,115 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Task
+metadata:
+  name: terraform-plan
+spec:
+  inputs:
+    params:
+      - name: directory
+        type: string
+        description: The directory containing the build context.
+        default: /workspace
+  volumes:
+    - name: terraform-volume
+      configMap:
+        name: terraform
+    - name: policy-volume
+      configMap:
+        name: policy
+    - name: data-storage
+      persistentVolumeClaim:
+        claimName: terraform-volume-claim
+  steps:
+    - name: cp
+      image: ubuntu
+      command: 
+        - cp
+      args: [
+        "-r",
+        "/tmp",
+        "$(inputs.params.directory)"
+      ]
+      volumeMounts:
+        - name: data-storage
+          mountPath: "$(inputs.params.directory)"
+        - name: terraform-volume
+          mountPath: "/tmp"
+    - name: terraform-init
+      image: blokje5/terraform-aws:latest
+      workingDir: "$(inputs.params.directory)/tmp"
+      args: [
+        "init"
+      ]
+      volumeMounts:
+        - name: data-storage
+          mountPath: "$(inputs.params.directory)"
+    - name: terraform-plan
+      image: blokje5/terraform-aws:latest
+      workingDir: "$(inputs.params.directory)/tmp"
+      args: [
+        "plan",
+        "-out=tfplan"
+      ]
+      volumeMounts:
+        - name: data-storage
+          mountPath: "$(inputs.params.directory)"
+      env:
+      - name: AWS_ACCESS_KEY_ID
+        valueFrom:
+          secretKeyRef:
+            name: aws-secret
+            key: key
+      - name: AWS_SECRET_ACCESS_KEY
+        valueFrom:
+          secretKeyRef:
+            name: aws-secret
+            key: secret
+      - name: AWS_SESSION_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: aws-secret
+            key: token
+      - name: AWS_DEFAULT_REGION
+        value: eu-west-1
+    - name: terraform-show
+      image: blokje5/terraform-aws:latest
+      workingDir: "$(inputs.params.directory)/tmp"
+      command: ["/bin/bash","-c"]
+      args: [
+        "terraform show -json ./tfplan > tfplan.json"
+      ]
+      volumeMounts:
+        - name: data-storage
+          mountPath: "$(inputs.params.directory)"
+    # - name: oras-pull
+    #   image: orasbot/oras
+    #   workingDir: "$(inputs.params.directory)/tmp"
+    #   command:
+    #     - oras
+    #     - pull
+    #     - localhost:32001/policies:latest
+    #   volumeMounts:
+    #     - name: data-storage
+    #       mountPath: "$(inputs.params.directory)"
+    # - name: conftest-pull
+    #   image: instrumenta/conftest
+    #   workingDir: "$(inputs.params.directory)/tmp"
+    #   command:
+    #     - conftest
+    #     - pull
+    #     - docker-registry:5000/policies:latest
+    #   volumeMounts:
+    #     - name: data-storage
+    #       mountPath: "$(inputs.params.directory)"
+    - name: conftest-test
+      image: instrumenta/conftest
+      workingDir: "$(inputs.params.directory)/tmp"
+      command:
+        - conftest
+        - test
+        - tfplan.json
+      volumeMounts:
+        - name: data-storage
+          mountPath: "$(inputs.params.directory)"
+        - name: policy-volume
+          mountPath: "$(inputs.params.directory)/tmp/policy"

@@ -1,0 +1,7 @@
+apiVersion: tekton.dev/v1alpha1
+kind: PipelineRun
+metadata:
+  name: opa-pipelinerun
+spec:
+  pipelineRef:
+    name: opa-pipeline

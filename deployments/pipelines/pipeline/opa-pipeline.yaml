@@ -1,0 +1,9 @@
+apiVersion: tekton.dev/v1alpha1
+kind: Pipeline
+metadata:
+  name: opa-pipeline
+spec:
+  tasks:
+    - name: validate-terraform-plan
+      taskRef:
+        name: terraform-plan

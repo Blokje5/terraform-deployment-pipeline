@@ -1,5 +1,5 @@
 WAIT := 200s
-APPLY = kubectl apply -f --kubeconfig=$$(kind get kubeconfig-path --name test) --filename
+APPLY = kubectl apply --kubeconfig=$$(kind get kubeconfig-path --name test) --filename
 OPA = opa
 
 unit-test:
@@ -23,4 +23,7 @@ list:
 registry:
 	@$(APPLY) deployments/registry/registry.yml
 
-.PHONY: create delete env clean list registry unit-test
+tekton:
+	@$(APPLY) https://storage.googleapis.com/tekton-releases/latest/release.yaml
+
+.PHONY: create delete env clean list registry unit-test tekton
