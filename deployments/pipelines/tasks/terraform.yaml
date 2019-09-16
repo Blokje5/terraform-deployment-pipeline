@@ -97,7 +97,7 @@ spec:
     #   command:
     #     - conftest
     #     - pull
-    #     - localhost:32001/policies:latest
+    #     - docker-registry:5000/policies:latest
     #   volumeMounts:
     #     - name: data-storage
     #       mountPath: "$(inputs.params.directory)"
